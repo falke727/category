@@ -63,34 +63,36 @@ data Two : Set where
   ⋆ : Two
 
 data TwoArrow : Two → Two → Set where
-  two-arrow : (x : Two) → (y : Two) → TwoArrow x y
+  two-arrowid : (a : Two) → TwoArrow a a
+  two-arrow   : (a : Two) → (b : Two) → TwoArrow * ⋆
 
 two-comp : {a b c : Two} → TwoArrow a b → TwoArrow b c → TwoArrow a c
-two-comp (two-arrow a b) (two-arrow .b c) = two-arrow a c
+two-comp (two-arrowid x) (two-arrowid .x) = two-arrowid x
+two-comp (two-arrowid .*) (two-arrow a b) = two-arrow a b
+two-comp (two-arrow a b) (two-arrowid .⋆) = two-arrow a b
+
 
 two-asso : {a b c d : Two} (f : TwoArrow a b) (g : TwoArrow b c) (h : TwoArrow c d) → two-comp (two-comp f g) h ≡ two-comp f (two-comp g h)
-two-asso (two-arrow a b) (two-arrow .b c) (two-arrow .c d) = refl
+two-asso (two-arrowid a) (two-arrowid .a) (two-arrowid .a) = refl
+two-asso (two-arrowid .*) (two-arrowid .*) (two-arrow a b) = refl
+two-asso (two-arrowid .*) (two-arrow a b) (two-arrowid .⋆) = refl
+two-asso (two-arrow a b) (two-arrowid .⋆) (two-arrowid .⋆) = refl
 
-two-unit-law-left : {a b : Two} (f : TwoArrow a b) → two-comp f (two-arrow b b) ≡ f
+two-unit-law-left : {a b : Two} (f : TwoArrow a b) → two-comp f (two-arrowid b) ≡ f
+two-unit-law-left (two-arrowid a) = refl
 two-unit-law-left (two-arrow a b) = refl
 
-two-unit-law-right : {b c : Two} (g : TwoArrow b c) → two-comp (two-arrow b b) g ≡ g
+two-unit-law-right : {b c : Two} (g : TwoArrow b c) → two-comp (two-arrowid b) g ≡ g
+two-unit-law-right (two-arrowid b) = refl
 two-unit-law-right (two-arrow b c) = refl
 
 TwoIsCategory : Category
 TwoIsCategory = record
                   { Object = Two
                   ; Arrow = TwoArrow
-                  ; identity = λ a → two-arrow a a
+                  ; identity = λ a → two-arrowid a
                   ; composition = two-comp
                   ; associativity = two-asso
                   ; unit_law_left = two-unit-law-left
                   ; unit_law_right = two-unit-law-right
                   }
-
-{- using this form
-
-   λ { x → _ ; y → _ }
-
-   we can use case split lambda.
--}
