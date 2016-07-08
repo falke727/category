@@ -12,41 +12,11 @@ record Category : Set1 where
       composition (composition f g) h ≡ composition f (composition g h)
     unit_law_left  : {a b : Object} → (f : Arrow a b) → composition f (identity b) ≡ f
     unit_law_right : {b c : Object} → (g : Arrow b c) → composition (identity b) g ≡ g
-   
-data One : Set where
-  * : One
 
-data OneArrow : One → One → Set where
-  one-arrow : (x : One) → (y : One) → OneArrow x y
+data Zero : Set where -- There is no object.
 
-comp : {a b c : One} → OneArrow a b → OneArrow b c → OneArrow a c
-comp (one-arrow a b) (one-arrow .b c) = one-arrow a c
-
-one-asso : {a b c d : One} (f : OneArrow a b) (g : OneArrow b c) (h : OneArrow c d) → comp (comp f g) h ≡ comp f (comp g h)
-one-asso (one-arrow a b) (one-arrow .b c) (one-arrow .c d) = refl
-
-one-unit-law-left : {a b : One} (f : OneArrow a b) → comp f (one-arrow b b) ≡ f
-one-unit-law-left (one-arrow a b) = refl
-
-one-unit-law-right : {b c : One} (g : OneArrow b c) → comp (one-arrow b b) g ≡ g
-one-unit-law-right (one-arrow b c) = refl
-
-OneIsCategory : Category
-OneIsCategory = record
-                  { Object = One
-                  ; Arrow  = OneArrow
-                  ; identity = λ a → one-arrow a a
-                  ; composition = comp
-                  ; associativity = one-asso
-                  ; unit_law_left = one-unit-law-left
-                  ; unit_law_right = one-unit-law-right
-                  }
-
-data Zero : Set where
-
-data ZeroArrow : Zero → Zero → Set where
-  --zero-arrow : (x : Zero) → (y : Zero) → ZeroArrow {!!} {!!}
-  
+data ZeroArrow : Zero → Zero → Set where -- There is no arrow.
+    
 ZeroIsCategory : Category
 ZeroIsCategory = record
                    { Object = Zero
@@ -58,41 +28,81 @@ ZeroIsCategory = record
                    ; unit_law_right = λ {b} → λ {}
                    }
 
+data One : Set where
+  * : One
+
+data OneArrow : One → One → Set where
+  *→* : OneArrow * *
+
+idOne : (a : One) → OneArrow a a
+idOne * = *→*
+
+compOne : {a b c : One} → OneArrow a b → OneArrow b c → OneArrow a c
+compOne *→* *→* = *→*
+
+assoOne : {a b c d : One} (f : OneArrow a b) (g : OneArrow b c) (h : OneArrow c d) → compOne (compOne f g) h ≡ compOne f (compOne g h)
+assoOne *→* *→* *→* = refl
+
+unitLawOneLeft : {a b : One} (f : OneArrow a b) → compOne f (idOne b) ≡ f
+unitLawOneLeft *→* = refl
+
+unitLawOneRight : {b c : One} (g : OneArrow b c) → compOne (idOne b) g ≡ g
+unitLawOneRight *→* = refl
+
+OneIsCategory : Category
+OneIsCategory = record
+                  { Object = One
+                  ; Arrow  = OneArrow
+                  ; identity = idOne
+                  ; composition = compOne
+                  ; associativity = assoOne
+                  ; unit_law_left = unitLawOneLeft
+                  ; unit_law_right = unitLawOneRight
+                  }
+
 data Two : Set where
   * : Two
   ⋆ : Two
 
 data TwoArrow : Two → Two → Set where
-  two-arrowid : (a : Two) → TwoArrow a a
-  two-arrow   : (a : Two) → (b : Two) → TwoArrow * ⋆
+  *→* : TwoArrow * *
+  ⋆→⋆ : TwoArrow ⋆ ⋆
+  *→⋆ : TwoArrow * ⋆
 
-two-comp : {a b c : Two} → TwoArrow a b → TwoArrow b c → TwoArrow a c
-two-comp (two-arrowid x) (two-arrowid .x) = two-arrowid x
-two-comp (two-arrowid .*) (two-arrow a b) = two-arrow a b
-two-comp (two-arrow a b) (two-arrowid .⋆) = two-arrow a b
+idTwo : (a : Two) → TwoArrow a a
+idTwo * = *→*
+idTwo ⋆ = ⋆→⋆
 
+compTwo : {a b c : Two} → TwoArrow a b → TwoArrow b c → TwoArrow a c
+compTwo *→* *→* = *→*
+compTwo *→* *→⋆ = *→⋆
+compTwo ⋆→⋆ ⋆→⋆ = ⋆→⋆
+compTwo *→⋆ ⋆→⋆ = *→⋆
 
-two-asso : {a b c d : Two} (f : TwoArrow a b) (g : TwoArrow b c) (h : TwoArrow c d) → two-comp (two-comp f g) h ≡ two-comp f (two-comp g h)
-two-asso (two-arrowid a) (two-arrowid .a) (two-arrowid .a) = refl
-two-asso (two-arrowid .*) (two-arrowid .*) (two-arrow a b) = refl
-two-asso (two-arrowid .*) (two-arrow a b) (two-arrowid .⋆) = refl
-two-asso (two-arrow a b) (two-arrowid .⋆) (two-arrowid .⋆) = refl
+assoTwo : {a b c d : Two} (f : TwoArrow a b) (g : TwoArrow b c) (h : TwoArrow c d) → compTwo (compTwo f g) h ≡ compTwo f (compTwo g h)
+assoTwo *→* *→* *→* = refl
+assoTwo *→* *→* *→⋆ = refl
+assoTwo *→* *→⋆ ⋆→⋆ = refl
+assoTwo ⋆→⋆ ⋆→⋆ ⋆→⋆ = refl
+assoTwo *→⋆ ⋆→⋆ ⋆→⋆ = refl
 
-two-unit-law-left : {a b : Two} (f : TwoArrow a b) → two-comp f (two-arrowid b) ≡ f
-two-unit-law-left (two-arrowid a) = refl
-two-unit-law-left (two-arrow a b) = refl
+unitLawTwoLeft : {a b : Two} (f : TwoArrow a b) → compTwo f (idTwo b) ≡ f
+unitLawTwoLeft *→* = refl
+unitLawTwoLeft ⋆→⋆ = refl
+unitLawTwoLeft *→⋆ = refl
 
-two-unit-law-right : {b c : Two} (g : TwoArrow b c) → two-comp (two-arrowid b) g ≡ g
-two-unit-law-right (two-arrowid b) = refl
-two-unit-law-right (two-arrow b c) = refl
+unitLawTwoRight : {b c : Two} (g : TwoArrow b c) → compTwo (idTwo b) g ≡ g
+unitLawTwoRight *→* = refl
+unitLawTwoRight ⋆→⋆ = refl
+unitLawTwoRight *→⋆ = refl
 
 TwoIsCategory : Category
 TwoIsCategory = record
                   { Object = Two
                   ; Arrow = TwoArrow
-                  ; identity = λ a → two-arrowid a
-                  ; composition = two-comp
-                  ; associativity = two-asso
-                  ; unit_law_left = two-unit-law-left
-                  ; unit_law_right = two-unit-law-right
+                  ; identity = idTwo
+                  ; composition = compTwo
+                  ; associativity = assoTwo
+                  ; unit_law_left = unitLawTwoLeft
+                  ; unit_law_right = unitLawTwoRight
                   }
