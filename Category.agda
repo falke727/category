@@ -13,106 +13,106 @@ record Category : Set1 where
     unit_law_left  : {a b : Object} → (f : Arrow a b) → composition f (identity b) ≡ f
     unit_law_right : {b c : Object} → (g : Arrow b c) → composition (identity b) g ≡ g
 
-data ０ : Set where -- There is no object.
+data ０Object : Set where -- There is no object.
 
-data ０Arrow : ０ → ０ → Set where -- There is no arrow.
+data ０Arrow : ０Object → ０Object → Set where -- There is no arrow.
     
-０IsCategory : Category
-０IsCategory = record
-                   { Object = ０
-                   ; Arrow = ０Arrow
-                   ; identity = λ ()
-                   ; composition = λ {a} {b} {c} _ → λ ()
-                   ; associativity = λ {a} {b} {c} {d} f g → λ ()
-                   ; unit_law_left = λ {a} {b} → λ ()
-                   ; unit_law_right = λ {b} {c} → λ ()
-                   }
+０ : Category
+０ = record
+       { Object = ０Object
+       ; Arrow = ０Arrow
+       ; identity = λ ()
+       ; composition = λ {a} {b} {c} _ → λ ()
+       ; associativity = λ {a} {b} {c} {d} f g → λ ()
+       ; unit_law_left = λ {a} {b} → λ ()
+       ; unit_law_right = λ {b} {c} → λ ()
+       }
+  
+data １Object : Set where
+  * : １Object
 
-data １ : Set where
-  * : １
-
-data １Arrow : １ → １ → Set where
+data １Arrow : １Object → １Object → Set where
   *→* : １Arrow * *
 
-id１ : (a : １) → １Arrow a a
+id１ : (a : １Object) → １Arrow a a
 id１ * = *→*
 
-comp１ : {a b c : １} → １Arrow a b → １Arrow b c → １Arrow a c
+comp１ : {a b c : １Object} → １Arrow a b → １Arrow b c → １Arrow a c
 comp１ *→* *→* = *→*
 
-asso１ : {a b c d : １} (f : １Arrow a b) (g : １Arrow b c) (h : １Arrow c d) → comp１ (comp１ f g) h ≡ comp１ f (comp１ g h)
+asso１ : {a b c d : １Object} (f : １Arrow a b) (g : １Arrow b c) (h : １Arrow c d) → comp１ (comp１ f g) h ≡ comp１ f (comp１ g h)
 asso１ *→* *→* *→* = refl
 
-unitLaw１Left : {a b : １} (f : １Arrow a b) → comp１ f (id１ b) ≡ f
+unitLaw１Left : {a b : １Object} (f : １Arrow a b) → comp１ f (id１ b) ≡ f
 unitLaw１Left *→* = refl
 
-unitLaw１Right : {b c : １} (g : １Arrow b c) → comp１ (id１ b) g ≡ g
+unitLaw１Right : {b c : １Object} (g : １Arrow b c) → comp１ (id１ b) g ≡ g
 unitLaw１Right *→* = refl
 
-１IsCategory : Category
-１IsCategory = record
-                  { Object = １
-                  ; Arrow  = １Arrow
-                  ; identity = id１
-                  ; composition = comp１
-                  ; associativity = asso１
-                  ; unit_law_left = unitLaw１Left
-                  ; unit_law_right = unitLaw１Right
-                  }
+１ : Category
+１ = record
+        { Object = １Object
+        ; Arrow  = １Arrow
+        ; identity = id１
+        ; composition = comp１
+        ; associativity = asso１
+        ; unit_law_left = unitLaw１Left
+        ; unit_law_right = unitLaw１Right
+        }
 
-data ２ : Set where
-  * : ２
-  ⋆ : ２
+data ２Object : Set where
+  * : ２Object
+  ⋆ : ２Object
 
-data ２Arrow : ２ → ２ → Set where
+data ２Arrow : ２Object → ２Object → Set where
   *→* : ２Arrow * *
   ⋆→⋆ : ２Arrow ⋆ ⋆
   *→⋆ : ２Arrow * ⋆
 
-id２ : (a : ２) → ２Arrow a a
+id２ : (a : ２Object) → ２Arrow a a
 id２ * = *→*
 id２ ⋆ = ⋆→⋆
 
-comp２ : {a b c : ２} → ２Arrow a b → ２Arrow b c → ２Arrow a c
+comp２ : {a b c : ２Object} → ２Arrow a b → ２Arrow b c → ２Arrow a c
 comp２ *→* *→* = *→*
 comp２ *→* *→⋆ = *→⋆
 comp２ ⋆→⋆ ⋆→⋆ = ⋆→⋆
 comp２ *→⋆ ⋆→⋆ = *→⋆
 
-asso２ : {a b c d : ２} (f : ２Arrow a b) (g : ２Arrow b c) (h : ２Arrow c d) → comp２ (comp２ f g) h ≡ comp２ f (comp２ g h)
+asso２ : {a b c d : ２Object} (f : ２Arrow a b) (g : ２Arrow b c) (h : ２Arrow c d) → comp２ (comp２ f g) h ≡ comp２ f (comp２ g h)
 asso２ *→* *→* *→* = refl
 asso２ *→* *→* *→⋆ = refl
 asso２ *→* *→⋆ ⋆→⋆ = refl
 asso２ ⋆→⋆ ⋆→⋆ ⋆→⋆ = refl
 asso２ *→⋆ ⋆→⋆ ⋆→⋆ = refl
 
-unitLaw２Left : {a b : ２} (f : ２Arrow a b) → comp２ f (id２ b) ≡ f
+unitLaw２Left : {a b : ２Object} (f : ２Arrow a b) → comp２ f (id２ b) ≡ f
 unitLaw２Left *→* = refl
 unitLaw２Left ⋆→⋆ = refl
 unitLaw２Left *→⋆ = refl
 
-unitLaw２Right : {b c : ２} (g : ２Arrow b c) → comp２ (id２ b) g ≡ g
+unitLaw２Right : {b c : ２Object} (g : ２Arrow b c) → comp２ (id２ b) g ≡ g
 unitLaw２Right *→* = refl
 unitLaw２Right ⋆→⋆ = refl
 unitLaw２Right *→⋆ = refl
 
-２IsCategory : Category
-２IsCategory = record
-                  { Object = ２
-                  ; Arrow = ２Arrow
-                  ; identity = id２
-                  ; composition = comp２
-                  ; associativity = asso２
-                  ; unit_law_left = unitLaw２Left
-                  ; unit_law_right = unitLaw２Right
-                  }
+２ : Category
+２ = record
+        { Object = ２Object
+        ; Arrow = ２Arrow
+        ; identity = id２
+        ; composition = comp２
+        ; associativity = asso２
+        ; unit_law_left = unitLaw２Left
+        ; unit_law_right = unitLaw２Right
+        }
 
-data ３ : Set where
-  * : ３
-  ⋆ : ３
-  # : ３
+data ３Object : Set where
+  * : ３Object
+  ⋆ : ３Object
+  # : ３Object
 
-data ３Arrow : ３ → ３ → Set where
+data ３Arrow : ３Object → ３Object → Set where
   *→* : ３Arrow * *
   ⋆→⋆ : ３Arrow ⋆ ⋆
   #→# : ３Arrow # #
@@ -120,12 +120,12 @@ data ３Arrow : ３ → ３ → Set where
   *→# : ３Arrow * #
   ⋆→# : ３Arrow ⋆ #
 
-id３ : (a : ３) → ３Arrow a a
+id３ : (a : ３Object) → ３Arrow a a
 id３ * = *→*
 id３ ⋆ = ⋆→⋆
 id３ # = #→#
 
-comp３ : {a b c : ３} → ３Arrow a b → ３Arrow b c → ３Arrow a c
+comp３ : {a b c : ３Object} → ３Arrow a b → ３Arrow b c → ３Arrow a c
 comp３ *→* *→* = *→*
 comp３ *→* *→⋆ = *→⋆
 comp３ *→* *→# = *→#
@@ -137,7 +137,7 @@ comp３ *→⋆ ⋆→# = *→#
 comp３ *→# #→# = *→#
 comp３ ⋆→# #→# = ⋆→#
 
-asso３ : {a b c d : ３} (f : ３Arrow a b) (g : ３Arrow b c) (h : ３Arrow c d) → comp３ (comp３ f g) h ≡ comp３ f (comp３ g h)
+asso３ : {a b c d : ３Object} (f : ３Arrow a b) (g : ３Arrow b c) (h : ３Arrow c d) → comp３ (comp３ f g) h ≡ comp３ f (comp３ g h)
 asso３ *→* *→* *→* = refl
 asso３ *→* *→* *→⋆ = refl
 asso３ *→* *→* *→# = refl
@@ -154,7 +154,7 @@ asso３ *→⋆ ⋆→# #→# = refl
 asso３ *→# #→# #→# = refl
 asso３ ⋆→# #→# #→# = refl
 
-unitLeft３ : {a b : ３} (f : ３Arrow a b) → comp３ f (id３ b) ≡ f
+unitLeft３ : {a b : ３Object} (f : ３Arrow a b) → comp３ f (id３ b) ≡ f
 unitLeft３ *→* = refl
 unitLeft３ ⋆→⋆ = refl
 unitLeft３ #→# = refl
@@ -162,7 +162,7 @@ unitLeft３ *→⋆ = refl
 unitLeft３ *→# = refl
 unitLeft３ ⋆→# = refl
 
-unitRight３ : {b c : ３} (g : ３Arrow b c) → comp３ (id３ b) g ≡ g
+unitRight３ : {b c : ３Object} (g : ３Arrow b c) → comp３ (id３ b) g ≡ g
 unitRight３ *→* = refl
 unitRight３ ⋆→⋆ = refl
 unitRight３ #→# = refl
@@ -170,32 +170,32 @@ unitRight３ *→⋆ = refl
 unitRight３ *→# = refl
 unitRight３ ⋆→# = refl
 
-３IsCategory : Category
-３IsCategory = record
-                    { Object = ３
-                    ; Arrow = ３Arrow
-                    ; identity = id３
-                    ; composition = comp３
-                    ; associativity = asso３
-                    ; unit_law_left = unitLeft３
-                    ; unit_law_right = unitRight３
-                    }
+３ : Category
+３ = record
+          { Object = ３Object
+          ; Arrow = ３Arrow
+          ; identity = id３
+          ; composition = comp３
+          ; associativity = asso３
+          ; unit_law_left = unitLeft３
+          ; unit_law_right = unitRight３
+          }
 
-data ↓↓ : Set where
-  a : ↓↓
-  b : ↓↓
+data ↓↓Object : Set where
+  a : ↓↓Object
+  b : ↓↓Object
 
-data ↓↓Arrow : ↓↓ → ↓↓ → Set where
+data ↓↓Arrow : ↓↓Object → ↓↓Object → Set where
   a→a  : ↓↓Arrow a a
   b→b  : ↓↓Arrow b b 
   a→₁b : ↓↓Arrow a b
   a→₂b : ↓↓Arrow a b
 
-↓↓id : (x : ↓↓) → ↓↓Arrow x x
+↓↓id : (x : ↓↓Object) → ↓↓Arrow x x
 ↓↓id a = a→a
 ↓↓id b = b→b
 
-↓↓comp : {x : ↓↓} {y : ↓↓} {z : ↓↓} → ↓↓Arrow x y → ↓↓Arrow y z → ↓↓Arrow x z
+↓↓comp : {x : ↓↓Object} {y : ↓↓Object} {z : ↓↓Object} → ↓↓Arrow x y → ↓↓Arrow y z → ↓↓Arrow x z
 ↓↓comp a→a a→a = a→a
 ↓↓comp a→a a→₁b = a→₁b
 ↓↓comp a→a a→₂b = a→₂b
@@ -203,7 +203,7 @@ data ↓↓Arrow : ↓↓ → ↓↓ → Set where
 ↓↓comp a→₁b b→b = a→₁b
 ↓↓comp a→₂b b→b = a→₂b
 
-↓↓asso : {x : ↓↓} {y : ↓↓} {z w : ↓↓} (f : ↓↓Arrow x y) (g : ↓↓Arrow y z) (h : ↓↓Arrow z w) → ↓↓comp (↓↓comp f g) h ≡ ↓↓comp f (↓↓comp g h)
+↓↓asso : {x y z w : ↓↓Object} (f : ↓↓Arrow x y) (g : ↓↓Arrow y z) (h : ↓↓Arrow z w) → ↓↓comp (↓↓comp f g) h ≡ ↓↓comp f (↓↓comp g h)
 ↓↓asso a→a a→a a→a = refl
 ↓↓asso a→a a→a a→₁b = refl
 ↓↓asso a→a a→a a→₂b = refl
@@ -213,25 +213,30 @@ data ↓↓Arrow : ↓↓ → ↓↓ → Set where
 ↓↓asso a→₁b b→b b→b = refl
 ↓↓asso a→₂b b→b b→b = refl
 
-↓↓unitLeft : {x : ↓↓} {y : ↓↓} (f : ↓↓Arrow x y) → ↓↓comp f (↓↓id y) ≡ f
+↓↓unitLeft : {x y : ↓↓Object} (f : ↓↓Arrow x y) → ↓↓comp f (↓↓id y) ≡ f
 ↓↓unitLeft a→a = refl
 ↓↓unitLeft b→b = refl
 ↓↓unitLeft a→₁b = refl
 ↓↓unitLeft a→₂b = refl
 
-↓↓unitRight : {y : ↓↓} {z : ↓↓} (g : ↓↓Arrow y z) → ↓↓comp (↓↓id y) g ≡ g
+↓↓unitRight : {y z : ↓↓Object} (g : ↓↓Arrow y z) → ↓↓comp (↓↓id y) g ≡ g
 ↓↓unitRight a→a = refl
 ↓↓unitRight b→b = refl
 ↓↓unitRight a→₁b = refl
 ↓↓unitRight a→₂b = refl
 
-↓↓IsCategory : Category
-↓↓IsCategory = record
-                   { Object = ↓↓
-                   ; Arrow = ↓↓Arrow
-                   ; identity = ↓↓id
-                   ; composition = ↓↓comp
-                   ; associativity = ↓↓asso
-                   ; unit_law_left = ↓↓unitLeft
-                   ; unit_law_right = ↓↓unitRight
-                   }
+↓↓ : Category
+↓↓ = record
+         { Object = ↓↓Object
+         ; Arrow = ↓↓Arrow
+         ; identity = ↓↓id
+         ; composition = ↓↓comp
+         ; associativity = ↓↓asso
+         ; unit_law_left = ↓↓unitLeft
+         ; unit_law_right = ↓↓unitRight
+         }
+
+record Functor (C B : Category) : Set1 where
+  field
+    object-function : {C B : Category} → C.Object → B.Object
+    --arrow-function :
