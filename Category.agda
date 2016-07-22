@@ -236,7 +236,24 @@ data ↓↓Arrow : ↓↓Object → ↓↓Object → Set where
          ; unit_law_right = ↓↓unitRight
          }
 
+{--
+record Functor (C B : Category) : Set1 where
+  private
+    module C = Category C
+    module B = Category B
+  field
+    object-function : C.Object → B.Object
+    arrow-function  : {c c' : C.Object} → C.Arrow c c' → B.Arrow (object-function c) (object-function c')
+    law₁ : {c : C.Object} → arrow-function (C.identity c) ≡ B.identity (object-function c)
+    law₂ : {a b c : C.Object} → {f : C.Arrow a b} → {g : C.Arrow b c}
+              → arrow-function (C.composition f g) ≡ B.composition (arrow-function f) (arrow-function g)
+--}
+
 record Functor (C B : Category) : Set1 where
   field
-    object-function : {C B : Category} → C.Object → B.Object
-    --arrow-function :
+    object-function : Category.Object C → Category.Object B
+    arrow-function  : {c c' : Category.Object C} → Category.Arrow C c c' → Category.Arrow B (object-function c) (object-function c')
+    law₁ : {c : Category.Object C}
+      → arrow-function ((Category.identity C) c) ≡ (Category.identity B) (object-function c) -- p.13 (1) left
+    law₂ : {a b c : Category.Object C} → {f : Category.Arrow C a b} → {g : Category.Arrow C b c}
+      → arrow-function (Category.composition C f g) ≡ Category.composition B (arrow-function f) (arrow-function g) -- p.13 (1) right
