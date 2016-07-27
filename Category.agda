@@ -253,7 +253,59 @@ record Functor (C B : Category) : Set1 where
   field
     object-function : Category.Object C → Category.Object B
     arrow-function  : {c c' : Category.Object C} → Category.Arrow C c c' → Category.Arrow B (object-function c) (object-function c')
-    law₁ : {c : Category.Object C}
-      → arrow-function ((Category.identity C) c) ≡ (Category.identity B) (object-function c) -- p.13 (1) left
-    law₂ : {a b c : Category.Object C} → {f : Category.Arrow C a b} → {g : Category.Arrow C b c}
-      → arrow-function (Category.composition C f g) ≡ Category.composition B (arrow-function f) (arrow-function g) -- p.13 (1) right
+    law₁ : (c : Category.Object C)
+          → arrow-function ((Category.identity C) c) ≡ (Category.identity B) (object-function c)
+     -- p.13 (1) left
+     -- T_{A}(1_{c}) ≡ 1_{T_{O}(C)}
+     -- map an Object in the Category C to its identity Arrow and map that to an Arrow in the Category B
+     -- map an object in the Category C to an Object in the Category B and map that to its identity Arrow.
+    law₂ : {a b c : Category.Object C} → (f : Category.Arrow C a b) → (g : Category.Arrow C b c)
+          → arrow-function (Category.composition C f g) ≡ Category.composition B (arrow-function f) (arrow-function g)
+      -- p.13 (1) right
+      -- T_{A}(g ∘ f) ≡ T_{A}(g) ∘ T_{A}(f)
+      -- compose f with g and map by T_{A} equals to map f and g by T_{A} then compose them
+
+
+１→１ : Functor １ １
+１→１ = record
+           { object-function = λ x → x ; arrow-function = λ x → x ; law₁ = λ _ → refl ; law₂ = λ _ _ → refl }
+
+To : Category.Object ３ → Category.Object ２
+To * = *
+To ⋆ = *
+To # = ⋆
+
+Ta : {c c' : Category.Object ３} → Category.Arrow ３ c c' → Category.Arrow ２ (To c) (To c')
+Ta *→* = *→*
+Ta ⋆→⋆ = *→*
+Ta #→# = ⋆→⋆
+Ta *→⋆ = *→*
+Ta *→# = *→⋆
+Ta ⋆→# = *→⋆
+
+
+３→２law₁ : (c : Category.Object ３) → Ta (Category.identity ３ c) ≡ Category.identity ２ (To c)
+３→２law₁ * = refl
+３→２law₁ ⋆ = refl
+３→２law₁ # = refl
+
+３→２law₂ : {a₁ b₁ c : Category.Object ３} (f : Category.Arrow ３ a₁ b₁) (g : Category.Arrow ３ b₁ c) → Ta (Category.composition ３ f g) ≡ Category.composition ２ (Ta f) (Ta g)
+３→２law₂ *→* *→* = refl
+３→２law₂ *→* *→⋆ = refl
+３→２law₂ *→* *→# = refl
+３→２law₂ ⋆→⋆ ⋆→⋆ = refl
+３→２law₂ ⋆→⋆ ⋆→# = refl
+３→２law₂ #→# #→# = refl
+３→２law₂ *→⋆ ⋆→⋆ = refl
+３→２law₂ *→⋆ ⋆→# = refl
+３→２law₂ *→# #→# = refl
+３→２law₂ ⋆→# #→# = refl
+
+３→２ : Functor ３ ２
+３→２ = record
+           { object-function = To ; arrow-function = Ta ; law₁ = ３→２law₁ ; law₂ = ３→２law₂ }
+
+record Natural-Transformation {C B : Category} (S T : Functor C B) : Set1 where
+--  field
+--    nt-func1 : {c c' : Category.Object C} → Category.Arrow B c c'
+--    object-function : Category.Object C → Category.Object B
