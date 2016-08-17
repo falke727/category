@@ -517,3 +517,75 @@ data カタカナ-Arrow : カタカナ-Object → カタカナ-Object → Set wh
              ; unit_law_left = カタカナul
              ; unit_law_right = カタカナur
              }
+
+S磯→カo : Category.Object 磯野家 → Category.Object カタカナ
+S磯→カo カツオ = サ
+S磯→カo サザエ = ワ
+S磯→カo ワカメ = カ
+
+S磯→カa : {c c' : Category.Object 磯野家} → Category.Arrow 磯野家 c c' → Category.Arrow カタカナ (S磯→カo c) (S磯→カo c')
+S磯→カa ワカメ→ワカメ = カ→カ
+S磯→カa カツオ→カツオ = サ→サ
+S磯→カa サザエ→サザエ = ワ→ワ
+S磯→カa カツオ→ワカメ = サ→カ
+S磯→カa サザエ→ワカメ = ワ→カ
+S磯→カa サザエ→カツオ = ワ→サ
+
+S磯→カl₁ : (c : Category.Object 磯野家) → S磯→カa (Category.identity 磯野家 c) ≡ Category.identity カタカナ (S磯→カo c)
+S磯→カl₁ カツオ = refl
+S磯→カl₁ サザエ = refl
+S磯→カl₁ ワカメ = refl
+
+S磯→カl₂ : {a₁ : Category.Object 磯野家} {b₁ : Category.Object 磯野家} {c : Category.Object 磯野家} (f : Category.Arrow 磯野家 a₁ b₁) (g : Category.Arrow 磯野家 b₁ c) → S磯→カa (Category.composition 磯野家 f g) ≡ Category.composition カタカナ (S磯→カa f) (S磯→カa g)
+S磯→カl₂ ワカメ→ワカメ ワカメ→ワカメ = refl
+S磯→カl₂ カツオ→カツオ カツオ→カツオ = refl
+S磯→カl₂ カツオ→カツオ カツオ→ワカメ = refl
+S磯→カl₂ サザエ→サザエ サザエ→サザエ = refl
+S磯→カl₂ サザエ→サザエ サザエ→ワカメ = refl
+S磯→カl₂ サザエ→サザエ サザエ→カツオ = refl
+S磯→カl₂ カツオ→ワカメ ワカメ→ワカメ = refl
+S磯→カl₂ サザエ→ワカメ ワカメ→ワカメ = refl
+S磯→カl₂ サザエ→カツオ カツオ→カツオ = refl
+S磯→カl₂ サザエ→カツオ カツオ→ワカメ = refl
+
+S磯野家→カタカナ : Functor 磯野家 カタカナ
+S磯野家→カタカナ = record
+                      { object-function = S磯→カo ; arrow-function = S磯→カa ; law₁ = S磯→カl₁ ; law₂ = S磯→カl₂ }
+
+T磯→カo : Category.Object 磯野家 → Category.Object カタカナ
+T磯→カo カツオ = オ
+T磯→カo サザエ = エ
+T磯→カo ワカメ = メ
+
+T磯→カa : {c c' : Category.Object 磯野家} → Category.Arrow 磯野家 c c' → Category.Arrow カタカナ (T磯→カo c) (T磯→カo c')
+T磯→カa ワカメ→ワカメ = メ→メ
+T磯→カa カツオ→カツオ = オ→オ
+T磯→カa サザエ→サザエ = エ→エ
+T磯→カa カツオ→ワカメ = オ→メ
+T磯→カa サザエ→ワカメ = エ→メ
+T磯→カa サザエ→カツオ = エ→オ
+
+T磯→カl₁ : (c : Category.Object 磯野家) → T磯→カa (Category.identity 磯野家 c) ≡ Category.identity カタカナ (T磯→カo c)
+T磯→カl₁ カツオ = refl
+T磯→カl₁ サザエ = refl
+T磯→カl₁ ワカメ = refl
+
+T磯→カl₂ : {a₁ : Category.Object 磯野家} {b₁ : Category.Object 磯野家} {c : Category.Object 磯野家} (f : Category.Arrow 磯野家 a₁ b₁) (g : Category.Arrow 磯野家 b₁ c) → T磯→カa (Category.composition 磯野家 f g) ≡ Category.composition カタカナ (T磯→カa f) (T磯→カa g)
+T磯→カl₂ ワカメ→ワカメ ワカメ→ワカメ = refl
+T磯→カl₂ カツオ→カツオ カツオ→カツオ = refl
+T磯→カl₂ カツオ→カツオ カツオ→ワカメ = refl
+T磯→カl₂ サザエ→サザエ サザエ→サザエ = refl
+T磯→カl₂ サザエ→サザエ サザエ→ワカメ = refl
+T磯→カl₂ サザエ→サザエ サザエ→カツオ = refl
+T磯→カl₂ カツオ→ワカメ ワカメ→ワカメ = refl
+T磯→カl₂ サザエ→ワカメ ワカメ→ワカメ = refl
+T磯→カl₂ サザエ→カツオ カツオ→カツオ = refl
+T磯→カl₂ サザエ→カツオ カツオ→ワカメ = refl
+
+T磯野家→カタカナ : Functor 磯野家 カタカナ
+T磯野家→カタカナ = record
+                      { object-function = T磯→カo ; arrow-function = T磯→カa ; law₁ = T磯→カl₁ ; law₂ = T磯→カl₂ }
+
+
+
+-- τ磯野家→カタカナ : Natural-Transformation
